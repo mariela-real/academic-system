@@ -16,11 +16,28 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('serves the welcome message', async () => {
+    // arrange
+    const appRequest = request(app.getHttpServer());
+
+    // act
+    const response = await appRequest.get('/');
+
+    // assert
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('Hello World!');
+  });
+
+  it('reports the API as available', async () => {
+    // arrange
+    const appRequest = request(app.getHttpServer());
+
+    // act
+    const response = await appRequest.get('/health');
+
+    // assert
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ status: 'ok' });
   });
 
   afterEach(async () => {
